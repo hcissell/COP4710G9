@@ -16,15 +16,9 @@
 <body>
 	<?php
 		$params = array();
-		if(isset($_GET['gender'])) {
-			$params['Gender'] = $_GET['gender'];
-		}
+		
 		if(isset($_GET['type'])) {
 			$params['IndividualType'] = $_GET['type'];
-		}
-	
-		if(isset($_GET['attending'])) {
-			$params['IndividualType'] = $_GET['attending'];
 		}
 	
 		$individuals = searchIndividuals($dbh, $params);
@@ -85,3 +79,5 @@
 	<script src="../assets/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>
+Contact GitHub API Training Shop Blog About
+© 2016 GitHub, Inc. Terms Privacy Security Status Help

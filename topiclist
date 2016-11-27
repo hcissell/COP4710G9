@@ -15,59 +15,36 @@
 	</head>
 <body>
 	<?php
+  
 		$params = array();
-		if(isset($_GET['gender'])) {
-			$params['Gender'] = $_GET['gender'];
-		}
-		if(isset($_GET['type'])) {
-			$params['IndividualType'] = $_GET['type'];
-		}
-	
+		
 		if(isset($_GET['attending'])) {
 			$params['IndividualType'] = $_GET['attending'];
 		}
 	
-		$individuals = searchIndividuals($dbh, $params);
+		$talkss = searchIndividuals($dbh, $params);
 	?>
 
 	
 	<div class="container">
 	<?php include('../common/nav.php'); ?>
-		<form>
-		  	<input type="radio" name="gender" value="male" checked> Male<br>
-  			<input type="radio" name="gender" value="female"> Female<br>
-  			<input type="radio" name="none" value="all"> All
-		</form>
-		
-		<form>
-		  	<input type="radio" name="attending" value="yes" checked> yes<br>
-  			<input type="radio" name="attending" value="no"> no<br>
-			<input type="submit" value="Submit">
-		</form>
-		
 		<table class="table table-striped">
 
 			<thead>
 				<tr>
-					<th>First Name</th>
-					<th>Last Name</th>
-					<th>Name Tag</th>
-					<th>Gender</th>
-					<th>Type</th>
-					<th>Edit</th>
-					<th>Delete</th>
+					<th>Title</th>
+					<th>Time</th>
+					<th>Description</th>
 				</tr>
 			</thead>
 			<tbody>
-			<?php foreach ($individuals as $individual): ?>
+			<?php foreach ($talks as $talk): ?>
 				<tr>
-					<td><?php echo $individual['FirstName'] ?></td>
-					<td><?php echo $individual['LastName'] ?></td>
-					<td><?php echo $individual['NameTag'] ?></td>
-					<td><?php echo $individual['Gender'] ?></td>
-					<td><?php echo $individual['IndividualType']?></td>
+					<td><?php echo $individual['Title'] ?></td>
+					<td><?php echo $individual['Time'] ?></td>
+					<td><?php echo $individual['Description'] ?></td>
 					<td>
-						<a href="update.php?id=<?php echo $individual['IndividualID']; ?>" target="new">
+						<a href="update.php?id=<?php echo $talk['EventID']; ?>" target="new">
 							<button type="button" class="btn btn-success">Edit</button>
 						</a>
 					</td>

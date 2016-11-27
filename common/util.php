@@ -303,6 +303,21 @@ function getParish($dbh, $parishName) {
 	return null;
 }
 
+function getParishfromaddr($dbh, $city) {
+	$sql = "select * from parish P,address A where city=? AND P.addressid = A.addressid";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($parishName));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) == 1) {
+			return $res[0];
+		} 
+	}
+
+	return null;
+}
+
 function findParish($dbh, $parishName) {
 	$sql = "select * from parish where ParishName=?";
 	$stm = $dbh->prepare($sql);
