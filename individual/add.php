@@ -87,7 +87,7 @@
 					<div class="span8">
 						<select class="selectpicker" name="gender">
 							<option value="MALE">Male</option>
-							<option value="MALE">Female</option>
+							<option value="FEMALE">Female</option>
 						</select>
 					</div>
 				</div>
