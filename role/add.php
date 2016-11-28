@@ -25,7 +25,7 @@
 							      "b'1'");
 
 				if($res) {
-					print("Created role " . $_POST['rolename'] . "Successfully!");
+					print("Created role " . $_POST['rolename'] . " Successfully!");
 				} else {
 					print("Error creating role");
 					print_r($dbh->errorInfo());

@@ -8,7 +8,6 @@ CREATE TABLE `address` (
   PRIMARY KEY (`AddressID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 CREATE TABLE `parish` (
   `ParishName` varchar(512) NOT NULL,
   `Diocese` varchar(128) DEFAULT NULL,
@@ -17,7 +16,6 @@ CREATE TABLE `parish` (
   KEY `AddressID_idx` (`AddressID`),
   CONSTRAINT `AddressID_Parish` FOREIGN KEY (`AddressID`) REFERENCES `address` (`AddressID`) ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 CREATE TABLE `individual` (
   `IndividualID` int(11) NOT NULL AUTO_INCREMENT,
@@ -43,9 +41,9 @@ CREATE TABLE `individual` (
   KEY `AddressID_idx` (`AddressID`),
   KEY `ParishName_idx` (`ParishName`),
   KEY `SponsorID_Individual_idx` (`SponsorID`),
-  CONSTRAINT `AddressID_Individual` FOREIGN KEY (`AddressID`) REFERENCES `address` (`AddressID`) ON UPDATE CASCADE ON DELETE SET NULL,
-  CONSTRAINT `ParishName_Individual` FOREIGN KEY (`ParishName`) REFERENCES `parish` (`ParishName`) ON UPDATE CASCADE,
-  CONSTRAINT `SponsorID_Individual` FOREIGN KEY (`SponsorID`) REFERENCES `individual` (`IndividualID`) ON UPDATE CASCADE
+  CONSTRAINT `AddressID_Individual` FOREIGN KEY (`AddressID`) REFERENCES `address` (`AddressID`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT `ParishName_Individual` FOREIGN KEY (`ParishName`) REFERENCES `parish` (`ParishName`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT `SponsorID_Individual` FOREIGN KEY (`SponsorID`) REFERENCES `individual` (`IndividualID`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `cursilloweekend` (
@@ -68,4 +66,40 @@ CREATE TABLE `role` (
   `RoleName` varchar(128) NOT NULL,
   `IsActive` bit(1) DEFAULT 1,
   PRIMARY KEY (`RoleID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `candidate` (
+  `CandidateID` int(11) NOT NULL,
+  PRIMARY KEY (`CandidateID`),
+  CONSTRAINT `CandidateID_Candidate` FOREIGN KEY (`CandidateID`) REFERENCES `individual` (`IndividualID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `teammember` (
+  `TeamMemberID` int(11) NOT NULL,
+  `FirstCursillo` int(11) DEFAULT NULL,
+  PRIMARY KEY (`TeamMemberID`),
+  KEY `FirstCursillo_idx` (`FirstCursillo`),
+  CONSTRAINT `FirstCursillo` FOREIGN KEY (`FirstCursillo`) REFERENCES `cursilloweekend` (`EventID`) ON UPDATE CASCADE,
+  CONSTRAINT `TeamMemberID` FOREIGN KEY (`TeamMemberID`) REFERENCES `individual` (`IndividualID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `candidateattendee` (
+  `CandidateID` int(11) NOT NULL,
+  `EventID` int(11) NOT NULL,
+  PRIMARY KEY (`CandidateID`,`EventID`),
+  KEY `EventID_idx` (`EventID`),
+  CONSTRAINT `CandidateID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandidateID`) ON UPDATE CASCADE,
+  CONSTRAINT `EventID` FOREIGN KEY (`EventID`) REFERENCES `cursilloweekend` (`EventID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `roleassignment` (
+  `TeamMemberID` int(11) NOT NULL,
+  `EventID` int(11) NOT NULL,
+  `RoleID` int(11) NOT NULL,
+  PRIMARY KEY (`TeamMemberID`,`EventID`,`RoleID`),
+  KEY `EventID_idx` (`EventID`),
+  KEY `RoleID_idx` (`RoleID`),
+  CONSTRAINT `EventID_RoleAssignment` FOREIGN KEY (`EventID`) REFERENCES `cursilloweekend` (`EventID`) ON UPDATE CASCADE,
+  CONSTRAINT `RoleID_RoleAssignment` FOREIGN KEY (`RoleID`) REFERENCES `role` (`RoleID`) ON UPDATE CASCADE,
+  CONSTRAINT `TeamMemberID_RoleAssignment` FOREIGN KEY (`TeamMemberID`) REFERENCES `teammember` (`TeamMemberID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

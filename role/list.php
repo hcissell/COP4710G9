@@ -16,12 +16,13 @@
 		<link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	</head>
 <body>
-	<?php
-		$roles = getRoles($dbh);
-	?>
 
 	<div class="container">
-	<?php include('../common/nav.php'); ?>
+		<?php include('../common/nav.php'); ?>
+		<?php
+			$roles = getRoles($dbh);
+			$test = array('a' => 1);
+		?>
 		<table class="table table-striped">
 			<thead>
 				<tr>

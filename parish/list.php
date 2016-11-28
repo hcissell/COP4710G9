@@ -17,11 +17,22 @@
 	</head>
 <body>
 	<?php
-		$parishes = getParishes($dbh);
+		if(isset($_GET['city'])) {
+			$params['City'] = $_GET['city'];
+		}
+
+		$parishes = getParishesfromaddr($dbh,$params);
 	?>
 
 	<div class="container">
 	<?php include('../common/nav.php'); ?>
+		
+		<form>
+  			Location:<br>
+  			<input type="text" name="city"><br>
+			<input type="submit" value="Submit">
+  		</form>
+		
 		<table class="table table-striped">
 			<thead>
 				<tr>

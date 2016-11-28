@@ -45,10 +45,29 @@ function validateDate($date)
 }
 
 /*			Individual Stuff 				*/
+function getTeamMember($dbh, $id) {
+	$sql = "select * from teammember where TeamMemberID=?";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($id));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res[0];
+		}
+	}
+}
+
+function createCandidate($dbh, $id) {
+	$sql = "insert into candidate (CandidateID) values (?)";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($id));
+}
+
 function updateIndividual($dbh, $individualId, $addressID, $first, $last, $gender, 
 						  $spousefirst, $spouselast, $pastorfirst, $pastorlast, $email, 
 						  $phone, $nametag, $occupation, $sponsorId, $parishName, 
-						  $birthday, $isMarried, $hasSpouseAttended, $type) {
+						  $birthday, $isMarried, $hasSpouseAttended) {
 
 	// TODO: Create Team/candidate entries
 	$sql = "update individual set AddressID=?,
@@ -67,8 +86,7 @@ function updateIndividual($dbh, $individualId, $addressID, $first, $last, $gende
 							      ParishName=?,
 							      Birthday=?,
 							      IsMarried=$isMarried,
-							      HasSpouseAttended=$hasSpouseAttended,
-							      IndividualType=?
+							      HasSpouseAttended=$hasSpouseAttended
 			where IndividualId=?";
 	
 	$stm = $dbh->prepare($sql);
@@ -87,7 +105,6 @@ function updateIndividual($dbh, $individualId, $addressID, $first, $last, $gende
    							   $sponsorId,
 							   $parishName,
 							   $birthday,
-							   $type,
 							   $individualId));
 	return $res;
 }
@@ -136,6 +153,11 @@ function createIndividual($dbh, $addressId, $first, $last, $gender, $spousefirst
 							   $parishName,
 							   $birthday,
 							   $type));
+
+	if($res && $type="CANDIDATE") {
+		createCandidate($dbh, $dbh->lastInsertId());
+	}
+
 	return $res;
 }
 
@@ -167,6 +189,30 @@ function getIndividuals($dbh) {
 	return $res;
 }
 
+function searchIndividuals($dbh, $searchParams) {
+	$params = array();
+	$sql = "select * from individual where ";
+
+	foreach ($searchParams as $param => $value) {
+		$sql .= $param . "=? and ";
+		$params[] = $value;
+	}
+
+	$sql = substr($sql, 0, -5);
+
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute($params);
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
+}
+
 function findSponsor($dbh, $firstName, $lastName) {
 	$sql = "select * from individual 
 				where FirstName=? and LastName=? and IndividualType='TEAM'";
@@ -177,7 +223,7 @@ function findSponsor($dbh, $firstName, $lastName) {
 	if($res == 1) {
 		$res = $stm->fetchAll();
 		if(count($res) > 0) {
-			return $res[0]["IndividualID"];			
+			return $res[0]["IndividualID"];
 		}
 	}
 
@@ -244,6 +290,21 @@ function deleteAddress($dbh, $id) {
 
 function getParish($dbh, $parishName) {
 	$sql = "select * from parish where ParishName=?";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($parishName));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) == 1) {
+			return $res[0];
+		} 
+	}
+
+	return null;
+}
+
+function getParishfromaddr($dbh, $city) {
+	$sql = "select * from parish P,address A where city=? AND P.addressid = A.addressid";
 	$stm = $dbh->prepare($sql);
 	$res = $stm->execute(array($parishName));
 
@@ -335,7 +396,20 @@ function getWeekends($dbh) {
 		return $stm->fetchAll();
 	}
 
-	return Array();
+	return array();
+}
+
+function searchWeekends($dbh, $after) {
+	$sql = "select * from cursilloweekend where Start>?";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($after));
+
+	if($res == 1) {
+		return $stm->fetchAll();
+	}
+
+	return array();
+
 }
 
 function updateCursillo($dbh, $eventId, $startDate, $endDate, $addressId, 
@@ -404,7 +478,22 @@ function getRoles($dbh) {
 		}
 	}
 
-	return Array();
+	return array();
+}
+
+function getActiveRoles($dbh) {
+	$sql = "select * from role where IsActive";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute();
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
 }
 
 function getRole($dbh, $id) {
@@ -432,6 +521,148 @@ function deleteRole($dbh, $role) {
 	$sql = "delete from role where RoleID=?";
 	$stm = $dbh->prepare($sql);
 	$res = $stm->execute(array($role["RoleID"]));
+
+	return $res;
+}
+
+/*		Candidate Attendence		*/
+
+function getPotentialCandidates($dbh, $gender, $eventID) {
+	$sql = "select * from individual where Gender=? 
+			and IndividualID not in (
+				select CandidateID from candidateattendee where EventID=?)";
+
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($gender, $eventID));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
+}
+
+function addAttendee($dbh, $candidateID, $cursilloID) {
+	$sql = "insert into candidateattendee (CandidateID, EventID) values (?,?)";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($candidateID, $cursilloID));
+
+	return $res;
+}
+
+function deleteAttendee($dbh, $candidateID, $cursilloID) {
+	$sql = "delete from candidateattendee where CandidateID=? and EventID=?";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($candidateID, $cursilloID));
+
+	return $res;
+}
+
+function getAttendees($dbh, $cursilloID) {
+	$sql = "select * from individual join candidate as c 
+						on IndividualID=c.CandidateID
+									 natural join candidateattendee as ca 
+						where ca.EventID=?";
+	
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($cursilloID));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
+}
+
+function promoteAttendee($dbh, $candidateID, $cursilloID) {
+	$sql = "insert into teammember (TeamMemberID, FirstCursillo) values (?,?)";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($candidateID, $cursilloID));
+
+	if($res) {
+		$sql = "update individual set IndividualType='TEAM' where IndividualID=?";
+		$stm = $dbh->prepare($sql);
+		$res = $stm->execute(array($candidateID));
+	}
+
+	return $res;
+}
+
+
+/*		Team Members		*/
+function getPotentialTeamMembers($dbh, $gender, $eventID) {
+	$sql = "select * from individual where Gender=? and IndividualType='TEAM'
+			and IndividualID not in (
+				select TeamMemberID from roleassignment where EventID=?)";
+
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($gender, $eventID));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
+}
+
+function getUnassignedRoles($dbh, $eventID) {
+	$sql = "select * from role
+			where IsActive and RoleID not in (
+				select RoleID from roleassignment where EventID=?)";
+
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($eventID));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
+}
+
+function getRoleAssignments($dbh, $eventID) {
+	$sql = "select * from role as r left join roleassignment as ra 
+				on r.RoleID=ra.RoleID
+				join individual as i on i.IndividualID=ra.TeamMemberID
+				where ra.EventID=? or ra.EventID IS NULL and r.IsActive";
+
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($eventID));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
+}
+
+function createRoleAssignment($dbh, $teamMemberID, $roleID, $eventID) {
+	$sql = "insert into roleassignment (TeamMemberID, RoleID, EventID) values (?,?,?)";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($teamMemberID, $roleID, $eventID));
+
+	return $res;
+}
+
+function deleteRoleAssignment($dbh, $teamMemberID, $roleID, $eventID) {
+	$sql = "delete from roleassignment where TeamMemberID=? and RoleID=? and EventID=?";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($teamMemberID, $roleID, $eventID));
 
 	return $res;
 }

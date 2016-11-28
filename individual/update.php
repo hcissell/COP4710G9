@@ -63,8 +63,7 @@
 										$parishName,
 										$birthday,
 										checkBoxToBit($ismarried),
-										checkBoxToBit($hasspouseattended),
-										$_POST['type']);
+										checkBoxToBit($hasspouseattended));
 
 			?>
 		<?php endif; ?>
@@ -290,7 +289,7 @@
 				<div class="row">
 					<div class="span4">Type:</div>
 					<div class="span8">
-						<select class="selectpicker" name="type">
+						<select class="selectpicker" name="type" disabled>
 							<option value="CANDIDATE" 
 								<?php if($individual['IndividualType']=='CANDIDATE') {
 									echo 'selected';
