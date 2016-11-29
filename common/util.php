@@ -207,7 +207,7 @@ function searchIndividuals($dbh, $searchParams, $extraParams) {
 	}
 
 	if(isset($extraParams['attendence']) || isset($extraParams['futureAttendence'])) {
-		if($andAppend) {
+		if(!$andAppend) {
 			if(isset($extraParams['attendence'])) {
 				$attendence = $extraParams['attendence'];
 				if($attendence == 'Yes') {
