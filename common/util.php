@@ -399,17 +399,27 @@ function getWeekends($dbh) {
 	return array();
 }
 
-function searchWeekends($dbh, $after) {
-	$sql = "select * from cursilloweekend where Start>?";
-	$stm = $dbh->prepare($sql);
-	$res = $stm->execute(array($after));
+function searchWeekends($dbh, $after, $reverse=false) {
+	if(!$reverse) {
+		$sql = "select * from cursilloweekend where Start>?";
+		$stm = $dbh->prepare($sql);
+		$res = $stm->execute(array($after));
 
-	if($res == 1) {
-		return $stm->fetchAll();
+		if($res == 1) {
+			return $stm->fetchAll();
+		}		
+	} else {
+		$sql = "select * from cursilloweekend where Start<=?";
+		$stm = $dbh->prepare($sql);
+		$res = $stm->execute(array($after));
+
+		if($res == 1) {
+			return $stm->fetchAll();
+		}		
+
 	}
 
 	return array();
-
 }
 
 function updateCursillo($dbh, $eventId, $startDate, $endDate, $addressId, 

@@ -40,7 +40,8 @@
             <li><a href="<?php makeLink('role/add.php') ?>">Create Role</a></li>
             <li><a href="<?php makeLink('role/list.php') ?>">Role List</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#">Team History</a></li>
+            <li><a href="<?php makeLink('team/history.php') ?>">Team History</a></li>
+            <li><a href="<?php makeLink('team/list.php') ?>">Team Members</a></li>
             <li><a href="<?php makeLink('team/build.php') ?>">Build a Team</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="#">Talk Topics</a></li>
