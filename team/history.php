@@ -28,7 +28,7 @@
 			<table class="table table-striped">
 				<thead>
 					<tr>
-						<th>Number</th>
+						<th>Cursillo Number</th>
 						<th>Title</th>
 						<th>Start Date</th>
 						<th>End Date</th>
