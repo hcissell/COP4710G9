@@ -103,3 +103,11 @@ CREATE TABLE `roleassignment` (
   CONSTRAINT `RoleID_RoleAssignment` FOREIGN KEY (`RoleID`) REFERENCES `role` (`RoleID`) ON UPDATE CASCADE,
   CONSTRAINT `TeamMemberID_RoleAssignment` FOREIGN KEY (`TeamMemberID`) REFERENCES `teammember` (`TeamMemberID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `talk` (
+  `TalkID` int(11) NOT NULL AUTO_INCREMENT,
+  `Title` varchar(128) NOT NULL,
+  `IsActive` bit(1) DEFAULT 1,
+  `Description` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`TalkID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

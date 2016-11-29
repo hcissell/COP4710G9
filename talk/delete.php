@@ -10,7 +10,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Delete A Cursillo Weekend</title>
+		<title>Delete A Talk</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- Bootstrap -->
 		<link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -25,16 +25,16 @@
 						die("Must provide an id to delete!");
 					}
 
-					$weekend = getCursillo($dbh, $id);
-					if(!empty($weekend)) {
-						if(deleteCursillo($dbh, $weekend)) {
-							echo $weekend['EventName'] . " Deleted Successfully!";
+					$talk = getTalk($dbh, $id);
+					if(!empty($talk)) {
+						if(deleteTalk($dbh, $talk)) {
+							echo $talk['Title'] . " Deleted Successfully!";
 						} else {
-							echo "Error Deleting Weekend";
+							echo "Error Deleting talk";
 						}
 					
 					} else {
-						echo "Weekend not found";
+						echo "Talk not found";
 					}
 				?>
 			</div>

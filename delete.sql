@@ -4,6 +4,7 @@ drop table teammember;
 drop table candidate;
 drop table individual;
 drop table cursilloweekend;
+drop table talk;
 drop table role;
 drop table parish;
 drop table address;

@@ -10,7 +10,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Role List</title>
+		<title>Talk List</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- Bootstrap -->
 		<link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -22,7 +22,7 @@
 			$active = $_GET['active'];
 		}
 
-		$roles = getRoles($dbh, $active);
+		$talks = getTalks($dbh, $active);
 	?>
 
 	<div class="container">
@@ -57,24 +57,24 @@
 			<table class="table table-striped">
 				<thead>
 					<tr>
-						<th>Role Name</th>
+						<th>Talk Title</th>
 						<th>Is Active</th>
 						<th>Edit</th>
 						<th>Delete</th>
 					</tr>
 				</thead>
 				<tbody>
-				<?php foreach ($roles as $role): ?>
+				<?php foreach ($talks as $talk): ?>
 					<tr>
-						<td><?php echo $role['RoleName'] ?></td>
-						<td><?php echo $role['IsActive'] ? "Yes" : "No" ?></td>
+						<td><?php echo $talk['Title'] ?></td>
+						<td><?php echo $talk['IsActive'] ? "Yes" : "No" ?></td>
 						<td>
-							<a href="update.php?id=<?php echo $role['RoleID']; ?>" target="new">
+							<a href="update.php?id=<?php echo $talk['TalkID']; ?>" target="new">
 								<button type="button" class="btn btn-success">Edit</button>
 							</a>
 						</td>
 						<td>
-							<a href="delete.php?id=<?php echo $role['RoleID']; ?>" target="new">
+							<a href="delete.php?id=<?php echo $talk['TalkID']; ?>" target="new">
 								<button type="button" class="btn btn-danger">Delete</button>
 							</a>
 						</td>

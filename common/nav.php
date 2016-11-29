@@ -44,8 +44,8 @@
             <li><a href="<?php makeLink('team/list.php') ?>">Team Members</a></li>
             <li><a href="<?php makeLink('team/build.php') ?>">Build a Team</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#">Talk Topics</a></li>
-            <li><a href="#">Create a Topic</a></li>
+            <li><a href="<?php makeLink('talk/list.php') ?>">Talk Topics</a></li>
+            <li><a href="<?php makeLink('talk/add.php') ?>">Create a Topic</a></li>
           </ul>
         </li>
         <li class="dropdown">
