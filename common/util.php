@@ -189,17 +189,79 @@ function getIndividuals($dbh) {
 	return $res;
 }
 
-function searchIndividuals($dbh, $searchParams) {
+function searchIndividuals($dbh, $searchParams, $extraParams) {
+	//$attendence=null, $futureAttendence=null, $role=null
+	$andAppend = false;
 	$params = array();
-	$sql = "select * from individual where ";
+	$sql = "select * from individual";
 
-	foreach ($searchParams as $param => $value) {
-		$sql .= $param . "=? and ";
-		$params[] = $value;
+	if(!empty($searchParams)) {
+		$sql .= " where ";
+		foreach ($searchParams as $param => $value) {
+			$sql .= $param . "=? and ";
+			$params[] = $value;
+		}
+	
+		$sql = substr($sql, 0, -5);
+		$andAppend = true;
 	}
 
-	$sql = substr($sql, 0, -5);
+	if(isset($extraParams['attendence']) || isset($extraParams['futureAttendence'])) {
+		if($andAppend) {
+			if(isset($extraParams['attendence'])) {
+				$attendence = $extraParams['attendence'];
+				if($attendence == 'Yes') {
+					$sql .= " where IndividualID in (select CandidateID from candidateattendee)";
+				} else {
+					$sql .= " where IndividualID not in (select CandidateID from candidateattendee)";
+				}
+			} else {
+				$futureAttendence = $extraParams['futureAttendence'];
+				$after = date('Y-m-d', time());
+				if($futureAttendence == 'Yes') {
+					$sql .= " where IndividualID in (select CandidateID from candidateattendee as a left join cursilloweekend as w on a.EventID=w.EventID where w.Start>?)";		
+				} else {
+					$sql .= " where IndividualID not in (select CandidateID from candidateattendee as a left join cursilloweekend as w on a.EventID=w.EventID where w.Start>?)";
+				}
 
+				$params[] = $after;
+			}
+		} else {
+			if(isset($extraParams['attendence'])) {
+				$attendence = $extraParams['attendence'];
+				if($attendence == 'Yes') {
+					$sql .= " and IndividualID in (select CandidateID from candidateattendee)";
+				} else {
+					$sql .= " and IndividualID not in (select CandidateID from candidateattendee)";
+				}
+			} else {
+				$futureAttendence = $extraParams['futureAttendence'];
+				$after = date('Y-m-d', time());
+				if($futureAttendence == 'Yes') {
+					$sql .= " and IndividualID in (select CandidateID from candidateattendee as a left join cursilloweekend as w on a.EventID=w.EventID where w.Start>?)";		
+				} else {
+					$sql .= " and IndividualID not in (select CandidateID from candidateattendee as a left join cursilloweekend as w on a.EventID=w.EventID where w.Start>?)";
+				}
+				
+				$params[] = $after;
+			}
+		}
+
+		$andAppend = true;
+	}
+
+	if(isset($extraParams['role'])) {
+		if($andAppend) {
+			$sql .= " and IndividualID in (select TeamMemberID from roleassignment where RoleID=?)";
+		} else {
+			$sql .= " where IndividualID in (select TeamMemberID from roleassignment where RoleID=?)";
+		}
+
+		$params[] = $extraParams['role'];
+		$andAppend = true;
+	}
+
+	echo $sql;
 	$stm = $dbh->prepare($sql);
 	$res = $stm->execute($params);
 
@@ -341,12 +403,23 @@ function createParish($dbh, $parishName, $diocese, $addressId) {
 	return $res;
 }
 
-function getParishes($dbh) {
+function getParishes($dbh, $diocese=null) {
+	$params = array();
 	$sql = "select * from parish";
-	$stm = $dbh->prepare($sql);
-	$res = $stm->execute();
 
-	return $stm->fetchAll();
+	if($diocese != null) {
+		$sql .= " where Diocese=?";
+		$params[] = $diocese;
+	}
+
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute($params);
+
+	if($res == 1) {
+		return $stm->fetchAll();
+	}
+
+	return array();
 }
 
 function updateParish($dbh, $parishName, $addressId, $diocese) {
@@ -369,6 +442,18 @@ function deleteParish($dbh, $parish) {
 	$res = $stm->execute(array($parishName));
 
 	return $res;
+}
+
+function getDioceses($dbh) {
+	$sql = "select distinct Diocese from parish";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute();
+
+	if($res == 1) {
+		return $stm->fetchAll();
+	}
+
+	return array();
 }
 
 
@@ -399,17 +484,27 @@ function getWeekends($dbh) {
 	return array();
 }
 
-function searchWeekends($dbh, $after) {
-	$sql = "select * from cursilloweekend where Start>?";
-	$stm = $dbh->prepare($sql);
-	$res = $stm->execute(array($after));
+function searchWeekends($dbh, $after, $reverse=false) {
+	if(!$reverse) {
+		$sql = "select * from cursilloweekend where Start>?";
+		$stm = $dbh->prepare($sql);
+		$res = $stm->execute(array($after));
 
-	if($res == 1) {
-		return $stm->fetchAll();
+		if($res == 1) {
+			return $stm->fetchAll();
+		}		
+	} else {
+		$sql = "select * from cursilloweekend where Start<=?";
+		$stm = $dbh->prepare($sql);
+		$res = $stm->execute(array($after));
+
+		if($res == 1) {
+			return $stm->fetchAll();
+		}		
+
 	}
 
 	return array();
-
 }
 
 function updateCursillo($dbh, $eventId, $startDate, $endDate, $addressId, 
@@ -466,8 +561,18 @@ function createRole($dbh, $roleName, $isActive) {
 	return $res;
 }
 
-function getRoles($dbh) {
+function getRoles($dbh, $isActive=null) {
 	$sql = "select * from role";
+
+	if($isActive != null) {
+		if($isActive=="yes") {
+			$sql .= " where IsActive";
+		} else {
+			$sql .= " where not IsActive";
+		}
+	}
+
+	echo $sql;
 	$stm = $dbh->prepare($sql);
 	$res = $stm->execute();
 

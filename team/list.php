@@ -8,47 +8,40 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Cursillo Registration</title>
+		<title>Team Members</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- Bootstrap -->
 		<link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	</head>
 <body>
 	<?php
+		$role = null;
 		$params = array();
 		$extraParams = array();
 
 		if(isset($_GET['gender']) && !empty($_GET['gender'])) {
 			$params['Gender'] = $_GET['gender'];
 		}
-		if(isset($_GET['type']) && !empty($_GET['type'])) {
-			$params['IndividualType'] = $_GET['type'];
-		}
-	
-		if(isset($_GET['hasattended']) && !empty($_GET['hasattended'])) {
-			$extraParams['attendence'] = $_GET['hasattended'];
+
+		if(isset($_GET['role']) && !empty($_GET['role'])) {
+			$extraParams['role'] = $_GET['role'];
 		}
 
-		if(isset($_GET['registeredforfuture']) && !empty($_GET['registeredforfuture'])) {
-			$extraParams['futureAttendence'] = $_GET['registeredforfuture'];
-		}
-	
+		$params['IndividualType'] = 'TEAM';
+
 		$individuals = searchIndividuals($dbh, $params, $extraParams);
+		$roles = getRoles($dbh);
 	?>
 
-	
 	<div class="container">
-	<?php include('../common/nav.php'); ?>
-
+		<?php include('../common/nav.php'); ?>
 		<form class="row">
 			<h5>Filter</h5>
 			<table class="table">
 				<thead>
 					<tr>
 						<th>Gender</th>
-						<th>Team Member?</th>
-						<th>Past Attendance</th>
-						<th>Registered For Future</th>
+						<th>Past Role Assignment</th>
 						<th>Submit</th>
 					</tr>
 				</thead>
@@ -62,24 +55,13 @@
 							</select>
 						</td>
 						<td>
-							<select class="selectpicker" name="type">
+							<select class="selectpicker" name="role">
 								<option value=""></option>
-								<option value="TEAM">Yes</option>
-								<option value="CANDIDATE">No</option>
-							</select>
-						</td>
-						<td>
-							<select class="selectpicker" name="hasattended">
-								<option value=""></option>
-								<option value="Yes">Yes</option>
-								<option value="No">No</option>
-							</select>
-						</td>
-						<td>
-							<select class="selectpicker" name="registeredforfuture">
-								<option value=""></option>
-								<option value="Yes">Yes</option>
-								<option value="No">No</option>
+							<?php foreach ($roles as $role): ?>
+								<option value="<?php echo $role['RoleID']?>">
+									<?php echo $role['RoleName']?>
+								</option>
+							<?php endforeach; ?>
 							</select>
 						</td>
 						<td>
@@ -90,17 +72,14 @@
 			</table>
 		</form>
 		<div class="row">
-			<h4>Cursillistas</h4>
 			<table class="table table-striped">
+				<h4>Cursillista Team Members</h4>
 				<thead>
 					<tr>
 						<th>First Name</th>
 						<th>Last Name</th>
-						<th>Name Tag</th>
 						<th>Gender</th>
-						<th>Type</th>
 						<th>Edit</th>
-						<th>Delete</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -108,17 +87,10 @@
 					<tr>
 						<td><?php echo $individual['FirstName'] ?></td>
 						<td><?php echo $individual['LastName'] ?></td>
-						<td><?php echo $individual['NameTag'] ?></td>
 						<td><?php echo $individual['Gender'] ?></td>
-						<td><?php echo $individual['IndividualType']?></td>
 						<td>
 							<a href="update.php?id=<?php echo $individual['IndividualID']; ?>" target="new">
 								<button type="button" class="btn btn-success">Edit</button>
-							</a>
-						</td>
-						<td>
-							<a href="delete.php?id=<?php echo $individual['IndividualID']; ?>" target="new">
-								<button type="button" class="btn btn-danger">Delete</button>
 							</a>
 						</td>
 					</tr>
