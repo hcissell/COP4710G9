@@ -9,11 +9,14 @@
              Cursillo Management <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
-            <li><a href="<?php makeLink('cursillo/add.php') ?>">Create Cursillo</a></li>
-            <li><a href="<?php makeLink('cursillo/list.php') ?>">Cursillo List</a></li>
-            <li><a href="<?php makeLink('cursillo/registered.php') ?>">Candidate List</a></li>
+            <li><a href="<?php makeLink('cursillo/add.php') ?>">Create a New Weekend</a></li>
+            <li><a href="<?php makeLink('cursillo/list.php') ?>">Weekend List</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="<?php makeLink('cursillo/registered.php') ?>">
+              List Candidate Registrations
+            </a></li>
             <li><a href="<?php makeLink('cursillo/registration.php') ?>">
-              Candidate Registration
+              Register a Candidate
             </a></li>
             <li role="separator" class="divider"></li>
             <li><a href="<?php makeLink('parish/list.php') ?>">Parish List</a></li>

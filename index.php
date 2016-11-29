@@ -55,7 +55,7 @@ $dbh = connectToDB();
 		</div>
 	</body>
 	<script src="http://code.jquery.com/jquery.js"></script>
-	<script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+	<script src="assets/bootstrap/js/bootstrap.min.js"></script>
 	<script>
 		$(document).ready(function(){
 			$('[data-toggle="tooltip"]').tooltip();
