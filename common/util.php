@@ -189,7 +189,9 @@ function getIndividuals($dbh) {
 	return $res;
 }
 
-function searchIndividuals($dbh, $searchParams, $attendence=null, $futureAttendence=null) {
+function searchIndividuals($dbh, $searchParams, $extraParams) {
+	//$attendence=null, $futureAttendence=null, $role=null
+	$andAppend = false;
 	$params = array();
 	$sql = "select * from individual";
 
@@ -201,17 +203,20 @@ function searchIndividuals($dbh, $searchParams, $attendence=null, $futureAttende
 		}
 	
 		$sql = substr($sql, 0, -5);
+		$andAppend = true;
 	}
 
-	if($attendence != null || $futureAttendence != null) {
-		if(empty($searchParams)) {
-			if($attendence != null) {
+	if(isset($extraParams['attendence']) || isset($extraParams['futureAttendence'])) {
+		if($andAppend) {
+			if(isset($extraParams['attendence'])) {
+				$attendence = $extraParams['attendence'];
 				if($attendence == 'Yes') {
 					$sql .= " where IndividualID in (select CandidateID from candidateattendee)";
 				} else {
 					$sql .= " where IndividualID not in (select CandidateID from candidateattendee)";
 				}
 			} else {
+				$futureAttendence = $extraParams['futureAttendence'];
 				$after = date('Y-m-d', time());
 				if($futureAttendence == 'Yes') {
 					$sql .= " where IndividualID in (select CandidateID from candidateattendee as a left join cursilloweekend as w on a.EventID=w.EventID where w.Start>?)";		
@@ -222,13 +227,15 @@ function searchIndividuals($dbh, $searchParams, $attendence=null, $futureAttende
 				$params[] = $after;
 			}
 		} else {
-			if($attendence != null) {
+			if(isset($extraParams['attendence'])) {
+				$attendence = $extraParams['attendence'];
 				if($attendence == 'Yes') {
 					$sql .= " and IndividualID in (select CandidateID from candidateattendee)";
 				} else {
 					$sql .= " and IndividualID not in (select CandidateID from candidateattendee)";
 				}
 			} else {
+				$futureAttendence = $extraParams['futureAttendence'];
 				$after = date('Y-m-d', time());
 				if($futureAttendence == 'Yes') {
 					$sql .= " and IndividualID in (select CandidateID from candidateattendee as a left join cursilloweekend as w on a.EventID=w.EventID where w.Start>?)";		
@@ -239,6 +246,18 @@ function searchIndividuals($dbh, $searchParams, $attendence=null, $futureAttende
 				$params[] = $after;
 			}
 		}
+
+		$andAppend = true;
+	}
+
+	if(isset($extraParams['role'])) {
+		if($andAppend) {
+			$sql .= " and IndividualID in (select TeamMemberID from roleassignment where RoleID=?)";
+		} else {
+			$sql .= " where IndividualID in (select TeamMemberID from roleassignment where RoleID=?)";
+		}
+
+		$params[] = $extraParams['role'];
 	}
 
 	echo $sql;

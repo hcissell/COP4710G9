@@ -16,8 +16,7 @@
 <body>
 	<?php
 		$params = array();
-		$attendence = null;
-		$futureAttendence = null;
+		$extraParams = array();
 
 		if(isset($_GET['gender']) && !empty($_GET['gender'])) {
 			$params['Gender'] = $_GET['gender'];
@@ -27,14 +26,14 @@
 		}
 	
 		if(isset($_GET['hasattended']) && !empty($_GET['hasattended'])) {
-			$attendence = $_GET['hasattended'];
+			$extraParams['attendence'] = $_GET['hasattended'];
 		}
 
 		if(isset($_GET['registeredforfuture']) && !empty($_GET['registeredforfuture'])) {
-			$futureAttendence = $_GET['registeredforfuture'];
+			$extraParams['futureAttendence'] = $_GET['registeredforfuture'];
 		}
 	
-		$individuals = searchIndividuals($dbh, $params, $attendence, $futureAttendence);
+		$individuals = searchIndividuals($dbh, $params, $extraParams);
 	?>
 
 	
