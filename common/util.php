@@ -258,6 +258,7 @@ function searchIndividuals($dbh, $searchParams, $extraParams) {
 		}
 
 		$params[] = $extraParams['role'];
+		$andAppend = true;
 	}
 
 	echo $sql;
@@ -402,12 +403,23 @@ function createParish($dbh, $parishName, $diocese, $addressId) {
 	return $res;
 }
 
-function getParishes($dbh) {
+function getParishes($dbh, $diocese=null) {
+	$params = array();
 	$sql = "select * from parish";
-	$stm = $dbh->prepare($sql);
-	$res = $stm->execute();
 
-	return $stm->fetchAll();
+	if($diocese != null) {
+		$sql .= " where Diocese=?";
+		$params[] = $diocese;
+	}
+
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute($params);
+
+	if($res == 1) {
+		return $stm->fetchAll();
+	}
+
+	return array();
 }
 
 function updateParish($dbh, $parishName, $addressId, $diocese) {
@@ -430,6 +442,18 @@ function deleteParish($dbh, $parish) {
 	$res = $stm->execute(array($parishName));
 
 	return $res;
+}
+
+function getDioceses($dbh) {
+	$sql = "select distinct Diocese from parish";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute();
+
+	if($res == 1) {
+		return $stm->fetchAll();
+	}
+
+	return array();
 }
 
 
