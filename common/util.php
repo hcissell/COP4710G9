@@ -189,17 +189,59 @@ function getIndividuals($dbh) {
 	return $res;
 }
 
-function searchIndividuals($dbh, $searchParams) {
+function searchIndividuals($dbh, $searchParams, $attendence=null, $futureAttendence=null) {
 	$params = array();
-	$sql = "select * from individual where ";
+	$sql = "select * from individual";
 
-	foreach ($searchParams as $param => $value) {
-		$sql .= $param . "=? and ";
-		$params[] = $value;
+	if(!empty($searchParams)) {
+		$sql .= " where ";
+		foreach ($searchParams as $param => $value) {
+			$sql .= $param . "=? and ";
+			$params[] = $value;
+		}
+	
+		$sql = substr($sql, 0, -5);
 	}
 
-	$sql = substr($sql, 0, -5);
+	if($attendence != null || $futureAttendence != null) {
+		if(empty($searchParams)) {
+			if($attendence != null) {
+				if($attendence == 'Yes') {
+					$sql .= " where IndividualID in (select CandidateID from candidateattendee)";
+				} else {
+					$sql .= " where IndividualID not in (select CandidateID from candidateattendee)";
+				}
+			} else {
+				$after = date('Y-m-d', time());
+				if($futureAttendence == 'Yes') {
+					$sql .= " where IndividualID in (select CandidateID from candidateattendee as a left join cursilloweekend as w on a.EventID=w.EventID where w.Start>?)";		
+				} else {
+					$sql .= " where IndividualID not in (select CandidateID from candidateattendee as a left join cursilloweekend as w on a.EventID=w.EventID where w.Start>?)";
+				}
 
+				$params[] = $after;
+			}
+		} else {
+			if($attendence != null) {
+				if($attendence == 'Yes') {
+					$sql .= " and IndividualID in (select CandidateID from candidateattendee)";
+				} else {
+					$sql .= " and IndividualID not in (select CandidateID from candidateattendee)";
+				}
+			} else {
+				$after = date('Y-m-d', time());
+				if($futureAttendence == 'Yes') {
+					$sql .= " and IndividualID in (select CandidateID from candidateattendee as a left join cursilloweekend as w on a.EventID=w.EventID where w.Start>?)";		
+				} else {
+					$sql .= " and IndividualID not in (select CandidateID from candidateattendee as a left join cursilloweekend as w on a.EventID=w.EventID where w.Start>?)";
+				}
+				
+				$params[] = $after;
+			}
+		}
+	}
+
+	echo $sql;
 	$stm = $dbh->prepare($sql);
 	$res = $stm->execute($params);
 
