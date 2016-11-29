@@ -38,7 +38,7 @@ $dbh = connectToDB();
 				</div>
 				<div class="row">
 					<a href="<?php makeLink('individual/') ?>">
-						<button type="button" class="btn span12">Individuals</button>
+						<button type="button" class="btn span12">Cursillistas</button>
 					</a>
 				</div>
 				<div class="row">
