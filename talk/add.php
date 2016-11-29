@@ -10,7 +10,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Update A Role</title>
+		<title>Create A Talk</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- Bootstrap -->
 		<link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -20,56 +20,35 @@
 		<?php include('../common/nav.php'); ?>
 		<?php if($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
 			<?php 
-				$id = $_GET['id'];
-				$isActive = isset($_POST['isactive']) ? $_POST['isactive'] : "off";
-
-				$res = updateRole($dbh,
-								  $id,
-							      $_POST['rolename'], 
-							      checkBoxToBit($isActive));
+				$res = createTalk($dbh,
+							      $_POST['title'], 
+							      "b'1'",$_POST['description']);
 
 				if($res) {
-					print("Updated role " . $_POST['rolename'] . "Successfully!");
+					print("Created talk " . $_POST['title'] . " Successfully!");
 				} else {
-					print("Error updating role");
+					print("Error creating talk");
 					print_r($dbh->errorInfo());
 				}
 			?>
 		<?php endif; ?>
-
-		<?php 
-			if(!isset($_GET['id'])) {
-				die('Cannot update a role without an id!');
-			}
-
-			$id = $_GET['id'];
-			$role = getRole($dbh, $id);
-
-			if(!isset($role) || empty($role)) {
-				die('Could not find role');
-			}
-
-
-		?>
-		
 		<form method="POST">
 			<div class="basic-individual-info">
 				<div class="row">
-					<div class="span4">Role Name:</div>
+					<div class="span4">Talk Title:</div>
 					<div class="span8">
-						<input class="input-block-level" type="text" 
-							   name="rolename" value="<?php echo $role['RoleName'] ?>">
+						<input class="input-block-level" type="text" name="title">
 					</div>
 				</div>
-				<div class="row">
-					<div class="span4">Is Active:</div>
+        <div class="row">
+					<div class="span4">Description</div>
 					<div class="span8">
-						<input class="input-block-level" type="checkbox" name="isactive"
-							   <?php if($role['IsActive']) { echo 'checked="checked"';} ?>>
+						<textarea class="span8 form-control"
+								  rows="5" name="description"></textarea>
 					</div>
 				</div>
 			</div>
-			<input class="btn btn-primary" type="submit" value="Update Role">
+			<input class="btn btn-primary" type="submit" value="Create Talk">
 		</form>
 	</div>
 	<script src="http://code.jquery.com/jquery.js"></script>

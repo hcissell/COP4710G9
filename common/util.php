@@ -772,4 +772,83 @@ function deleteRoleAssignment($dbh, $teamMemberID, $roleID, $eventID) {
 	return $res;
 }
 
+/*				Talk Stuff 			*/
+
+function createTalk($dbh, $title, $isActive, $description) {
+	$sql = "insert into talk (Title, IsActive, Description) values (?, $isActive, ?)";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($title, $description));
+
+	return $res;
+}
+
+function getTalks($dbh, $isActive=null) {
+	$sql = "select * from talk";
+
+	if($isActive != null) {
+		if($isActive=="yes") {
+			$sql .= " where IsActive";
+		} else {
+			$sql .= " where not IsActive";
+		}
+	}
+
+	echo $sql;
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute();
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
+}
+
+function getActiveTalks($dbh) {
+	$sql = "select * from talk where IsActive";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute();
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
+}
+
+function getTalk($dbh, $id) {
+	$sql = "select * from talk where TalkID=?";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($id));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res[0];
+		}
+	}
+}
+
+function updateTalk($dbh, $id, $title, $isActive, $description) {
+	$sql = "update talk set title=?, IsActive=$isActive, Description=? where TalkID=?";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($title, $description, $id));
+
+	return $res;
+}
+
+function deleteTalk($dbh, $talk) {
+	$sql = "delete from talk where TalkID=?";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($talk["TalkID"]));
+
+	return $res;
+}
+
 ?>

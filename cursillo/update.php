@@ -10,7 +10,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Create A Cursillo Weekend</title>
+		<title>Update A Cursillo Weekend</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- Bootstrap -->
 		<link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
