@@ -561,8 +561,18 @@ function createRole($dbh, $roleName, $isActive) {
 	return $res;
 }
 
-function getRoles($dbh) {
+function getRoles($dbh, $isActive=null) {
 	$sql = "select * from role";
+
+	if($isActive != null) {
+		if($isActive=="yes") {
+			$sql .= " where IsActive";
+		} else {
+			$sql .= " where not IsActive";
+		}
+	}
+
+	echo $sql;
 	$stm = $dbh->prepare($sql);
 	$res = $stm->execute();
 
