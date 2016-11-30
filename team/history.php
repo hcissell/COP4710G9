@@ -24,7 +24,9 @@
 				$after = date('Y-m-d', time());
 				$weekends = searchWeekends($dbh, $after, true);
 			?>
-
+			<div class="row menu-header">
+				<h4 class="span12" style="text-align:center;">Select A Past Event to See Team</h4>
+			</div>
 			<table class="table table-striped">
 				<thead>
 					<tr>
@@ -69,6 +71,9 @@
 					$individuals = getPotentialTeamMembers($dbh, $weekend['Gender'], $id);
 					$roleAssignments = getRoleAssignments($dbh, $id);
 				?>
+			<div class="row menu-header">
+				<h4 class="span12" style="text-align:center;">Team Members for Cursillo #: <?php echo $id ?></h4>
+			</div>
 				<div class="span5">
 					<table class="table table-striped">
 						<thead>
@@ -91,7 +96,7 @@
 												"roleid=" . $role['RoleID'];
 									?>
 									<a href="history.php?<?php echo $link; ?>" target="new">
-										<button type="button" class="btn btn-success">Unassign</button>
+										<button type="button" class="btn btn-success" disabled>Unassign</button>
 									</a>
 								</td>
 							</tr>

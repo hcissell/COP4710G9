@@ -24,7 +24,9 @@
 				$after = date('Y-m-d', time());
 				$weekends = searchWeekends($dbh, $after);
 			?>
-
+			<div class="row menu-header">
+				<h4 class="span12" style="text-align:center;">Select An Upcoming Event to Build a Team</h4>
+			</div>
 			<table class="table table-striped">
 				<thead>
 					<tr>
@@ -81,7 +83,11 @@
 					$individuals = getPotentialTeamMembers($dbh, $weekend['Gender'], $id);
 					$roleAssignments = getRoleAssignments($dbh, $id);
 				?>
+			<div class="row menu-header">
+				<h4 class="span12" style="text-align:center;">Add Team Members to Cursillo #: <?php echo $id ?></h4>
+			</div>
 				<div class="span5">
+					<h6>Current Assignments</h6>
 					<table class="table table-striped">
 						<thead>
 							<tr>
@@ -114,6 +120,7 @@
 					</table>
 				</div>
 				<div class="span7">
+					<h6>Available Individuals</h6>
 					<table class="table table-striped">
 						<thead>
 							<tr>
