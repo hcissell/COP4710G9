@@ -17,7 +17,7 @@
 	</head>
 <body>
 	<div class="container">
-	<?php include('../common/nav.php'); ?>
+		<?php include('../common/nav.php'); ?>
 		<?php if($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
 			<?php
 				$id = $_GET['id'];
@@ -78,7 +78,9 @@
 			$startDate = validateDate($weekend['Start']) ? $weekend['Start'] : null;
 			$endDate = validateDate($weekend['End']) ? $weekend['End'] : null;
 		?>
-
+		<div class="row menu-header">
+			<h4 class="span12" style="text-align:center;">Update Cursillo # <?php echo $id ?></h4>
+		</div>
 		<form method="POST" id="cursillo-form">
 			<div class="basic-cursillo-info">
 				<div class="row">
