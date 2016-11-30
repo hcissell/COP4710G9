@@ -472,10 +472,22 @@ function createCursillo($dbh, $startDate, $endDate, $addressId, $title,
 	return $res;
 }
 
-function getWeekends($dbh) {
+function getWeekends($dbh, $searchParams) {
+	$params = array();
 	$sql = "select * from cursilloweekend";
+
+	if(!empty($searchParams)) {
+		$sql .= " where ";
+		foreach ($searchParams as $param => $value) {
+			$sql .= $param . "=? and ";
+			$params[] = $value;
+		}
+	
+		$sql = substr($sql, 0, -5);
+	}
+
 	$stm = $dbh->prepare($sql);
-	$res = $stm->execute();
+	$res = $stm->execute($params);
 
 	if($res == 1) {
 		return $stm->fetchAll();

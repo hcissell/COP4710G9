@@ -21,10 +21,11 @@
 		<?php include('../common/nav.php'); ?>
 		<?php if(!isset($_GET['cursillo'])): ?>
 			<?php
-				$after = date('Y-m-d', time());
-				$weekends = searchWeekends($dbh, $after);
+				$weekends = getWeekends($dbh, array());
 			?>
-
+			<div class="row menu-header">
+				<h4 class="span12" style="text-align:center;">Select An Event to See Registered Cendidates</h4>
+			</div>
 			<table class="table table-striped">
 				<thead>
 					<tr>
@@ -78,7 +79,12 @@
 
 				$individuals = getAttendees($dbh, $id);
 			?>
-			
+			<div class="row menu-header">
+				<div class="span3">
+		        	<a href="<?php makeLink('cursillo/registered.php') ?>" class="btn">Back</a>
+				</div>
+				<h4 class="span8">Registered Candidates for Cursillo #: <?php echo $id ?></h4>
+			</div>
 			<table class="table table-striped">
 				<thead>
 					<tr>
