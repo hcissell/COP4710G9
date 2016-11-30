@@ -24,7 +24,9 @@
 				$after = date('Y-m-d', time());
 				$weekends = searchWeekends($dbh, $after);
 			?>
-
+			<div class="row menu-header">
+				<h4 class="span12" style="text-align:center;">Select An Upcoming Event To Assign Talk Topics</h4>
+			</div>
 			<table class="table table-striped">
 				<thead>
 					<tr>
@@ -59,28 +61,31 @@
 				</tbody>
 			</table>
 		<?php else: ?>
+			<?php
+				$id = $_GET['cursillo'];
+
+				if($_SERVER['REQUEST_METHOD'] === 'POST') {
+					if(!createTalkAssignment($dbh, 
+											 $_POST['individualid'],
+											 $_POST['talkid'],
+											 $id));
+				} elseif(isset($_GET['delperson'])) {
+					deleteTalkAssignment($dbh, 
+										 $_GET['delperson'],
+										 $_GET['talkid'],
+										 $id);
+				}
+
+				$weekend = getCursillo($dbh, $id);
+				
+				$unasignedTalks = getUnassignedTalks($dbh, $id);
+				$individuals = getPotentialSpeakers($dbh, $weekend['Gender'], $id);
+				$talkAssignments = getTalkAssignments($dbh, $id);
+			?>
+			<div class="row menu-header">
+				<h4 class="span12" style="text-align:center;">Assign Topics for Cursillo #: <?php echo $id ?></h4>
+			</div>
 			<div class="row">
-				<?php
-					$id = $_GET['cursillo'];
-
-					if($_SERVER['REQUEST_METHOD'] === 'POST') {
-						if(!createTalkAssignment($dbh, 
-												 $_POST['individualid'],
-												 $_POST['talkid'],
-												 $id));
-					} elseif(isset($_GET['delperson'])) {
-						deleteTalkAssignment($dbh, 
-											 $_GET['delperson'],
-											 $_GET['talkid'],
-											 $id);
-					}
-
-					$weekend = getCursillo($dbh, $id);
-					
-					$unasignedTalks = getUnassignedTalks($dbh, $id);
-					$individuals = getPotentialSpeakers($dbh, $weekend['Gender'], $id);
-					$talkAssignments = getTalkAssignments($dbh, $id);
-				?>
 				<div class="span5">
 					<table class="table table-striped">
 						<thead>
