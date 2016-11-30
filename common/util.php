@@ -758,7 +758,7 @@ function getUnassignedRoles($dbh, $eventID) {
 function getRoleAssignments($dbh, $eventID) {
 	$sql = "select * from role as r left join roleassignment as ra 
 				on r.RoleID=ra.RoleID
-				join individual as i on i.IndividualID=ra.TeamMemberID
+				left join individual as i on i.IndividualID=ra.TeamMemberID
 				where ra.EventID=? or ra.EventID IS NULL and r.IsActive";
 
 	$stm = $dbh->prepare($sql);
