@@ -44,6 +44,7 @@
 			</div>
 		</div>
 	</body>
+<?php include('../common/footer.php'); ?>
 	<script src="http://code.jquery.com/jquery.js"></script>
 	<script src="../assets/bootstrap/js/bootstrap.min.js"></script>
 	<script>

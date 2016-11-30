@@ -219,4 +219,5 @@
 		});
 	</script>
 </body>
+<?php include('../common/footer.php'); ?>
 </html>

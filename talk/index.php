@@ -46,4 +46,5 @@
 	 		$('[data-toggle="tooltip"]').tooltip();
 		});
 	</script>
+<?php include('../common/footer.php'); ?>
 </html>
