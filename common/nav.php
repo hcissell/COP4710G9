@@ -49,6 +49,7 @@
             <li role="separator" class="divider"></li>
             <li><a href="<?php makeLink('talk/list.php') ?>">Talk Topics</a></li>
             <li><a href="<?php makeLink('talk/add.php') ?>">Create a Topic</a></li>
+            <li><a href="<?php makeLink('talk/build.php') ?>">Assign Talks</a></li>
           </ul>
         </li>
         <li class="dropdown">

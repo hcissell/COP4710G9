@@ -719,6 +719,24 @@ function getPotentialTeamMembers($dbh, $gender, $eventID) {
 	return array();
 }
 
+function getPotentialSpeakers($dbh, $gender, $eventID) {
+	$sql = "select * from individual where Gender=? and IndividualType='TEAM'
+			and IndividualID not in (
+				select TeamMemberID from talkassignment where EventID=?)";
+
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($gender, $eventID));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
+}
+
 function getUnassignedRoles($dbh, $eventID) {
 	$sql = "select * from role
 			where IsActive and RoleID not in (
@@ -847,6 +865,59 @@ function deleteTalk($dbh, $talk) {
 	$sql = "delete from talk where TalkID=?";
 	$stm = $dbh->prepare($sql);
 	$res = $stm->execute(array($talk["TalkID"]));
+
+	return $res;
+}
+
+function getUnassignedTalks($dbh, $eventID) {
+	$sql = "select * from talk
+			where IsActive and TalkID not in (
+				select TalkID from talkassignment where EventID=?)";
+
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($eventID));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
+}
+
+function getTalkAssignments($dbh, $eventID) {
+	$sql = "select * from talk as r left join talkassignment as ra 
+				on r.TalkID=ra.TalkID
+				left join individual as i on i.IndividualID=ra.TeamMemberID
+				where ra.EventID=? or ra.EventID IS NULL and r.IsActive";
+
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($eventID));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
+}
+
+function createTalkAssignment($dbh, $teamMemberID, $talkID, $eventID) {
+	$sql = "insert into talkassignment (TeamMemberID, TalkID, EventID) values (?,?,?)";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($teamMemberID, $talkID, $eventID));
+
+	return $res;
+}
+
+function deleteTalkAssignment($dbh, $teamMemberID, $talkID, $eventID) {
+	$sql = "delete from talkassignment where TeamMemberID=? and TalkID=? and EventID=?";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($teamMemberID, $talkID, $eventID));
 
 	return $res;
 }

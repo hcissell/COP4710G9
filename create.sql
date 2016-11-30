@@ -111,3 +111,15 @@ CREATE TABLE `talk` (
   `Description` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`TalkID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `talkassignment` (
+  `TeamMemberID` int(11) NOT NULL,
+  `EventID` int(11) NOT NULL,
+  `TalkID` int(11) NOT NULL,
+  PRIMARY KEY (`TeamMemberID`,`EventID`,`TalkID`),
+  KEY `EventID_idx` (`EventID`),
+  KEY `TalkID_idx` (`TalkID`),
+  CONSTRAINT `EventID_TalkAssignment` FOREIGN KEY (`EventID`) REFERENCES `cursilloweekend` (`EventID`) ON UPDATE CASCADE,
+  CONSTRAINT `TalkID_TalkAssignment` FOREIGN KEY (`TalkID`) REFERENCES `talk` (`TalkID`) ON UPDATE CASCADE,
+  CONSTRAINT `TeamMemberID_TalkAssignment` FOREIGN KEY (`TeamMemberID`) REFERENCES `teammember` (`TeamMemberID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
