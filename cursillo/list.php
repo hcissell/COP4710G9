@@ -17,11 +17,45 @@
 	</head>
 <body>
 	<?php
-		$weekends = getWeekends($dbh);
+		$params = array();
+
+		if(isset($_GET['gender']) && !empty($_GET['gender'])) {
+			$params['Gender'] = $_GET['gender'];
+		}
+
+		$weekends = getWeekends($dbh, $params);
 	?>
 
 	<div class="container">
-	<?php include('../common/nav.php'); ?>
+		<?php include('../common/nav.php'); ?>
+		<div class="row menu-header">
+			<h2 class="span12" style="text-align:center;">Cursillo List</h2>
+		</div>
+		<form class="row">
+			<h5>Filter</h5>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Gender</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<select class="selectpicker" name="gender">
+								<option value=""></option>
+								<option value="MALE">Male</option>
+								<option value="FEMALE">Female</option>
+							</select>
+						</td>
+						<td>
+							<input class="btn btn-primary" type="submit" value="filter">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+
 		<table class="table table-striped">
 			<thead>
 				<tr>
@@ -65,4 +99,5 @@
 	<script src="http://code.jquery.com/jquery.js"></script>
 	<script src="../assets/bootstrap/js/bootstrap.min.js"></script>
 </body>
+<?php include('../common/footer.php'); ?>
 </html>

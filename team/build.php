@@ -24,7 +24,9 @@
 				$after = date('Y-m-d', time());
 				$weekends = searchWeekends($dbh, $after);
 			?>
-
+			<div class="row menu-header">
+				<h4 class="span12" style="text-align:center;">Select An Upcoming Event to Build a Team</h4>
+			</div>
 			<table class="table table-striped">
 				<thead>
 					<tr>
@@ -81,7 +83,11 @@
 					$individuals = getPotentialTeamMembers($dbh, $weekend['Gender'], $id);
 					$roleAssignments = getRoleAssignments($dbh, $id);
 				?>
+			<div class="row menu-header">
+				<h4 class="span12" style="text-align:center;">Add Team Members to Cursillo #: <?php echo $id ?></h4>
+			</div>
 				<div class="span5">
+					<h6>Current Assignments</h6>
 					<table class="table table-striped">
 						<thead>
 							<tr>
@@ -103,7 +109,21 @@
 												"roleid=" . $role['RoleID'];
 									?>
 									<a href="build.php?<?php echo $link; ?>" target="new">
-										<button type="button" class="btn btn-success">Unassign</button>
+										<button type="button" class="btn btn-success"
+										>Unassign</button>
+									</a>
+								</td>
+							</tr>
+						<?php endforeach ?>
+
+						<?php foreach ($unassignedRoles as $role): ?>
+							<tr>
+								<td><?php echo $role['RoleName'] ?></td>
+								<td>Nobody</td>
+								<td>
+									<a href="#" target="new">
+										<button disabled type="button" class="btn btn-success"
+										>Unassign</button>
 									</a>
 								</td>
 							</tr>
@@ -112,6 +132,7 @@
 					</table>
 				</div>
 				<div class="span7">
+					<h6>Available Individuals</h6>
 					<table class="table table-striped">
 						<thead>
 							<tr>
@@ -160,4 +181,5 @@
 	<script src="http://code.jquery.com/jquery.js"></script>
 	<script src="../assets/bootstrap/js/bootstrap.min.js"></script>
 </body>
+<?php include('../common/footer.php'); ?>
 </html>

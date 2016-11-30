@@ -17,7 +17,7 @@
 	</head>
 <body>
 	<div class="container">
-	<?php include('../common/nav.php'); ?>
+		<?php include('../common/nav.php'); ?>
 		<?php if($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
 			<?php 
 				$addressId = createAddress($dbh,
@@ -62,6 +62,9 @@
 				}
 			?>
 		<?php endif ?>
+		<div class="row menu-header">
+			<h4 class="span12" style="text-align:center;">Create New Cursillista</h4>
+		</div>
 		<form method="POST">
 			<div class="basic-individual-info">
 				<div class="row">
@@ -219,4 +222,5 @@
 		});
 	</script>
 </body>
+<?php include('../common/footer.php'); ?>
 </html>

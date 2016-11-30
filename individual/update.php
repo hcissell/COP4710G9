@@ -92,7 +92,9 @@
 				$sponsorLast = '';
 			}
 		?>
-
+		<div class="row menu-header">
+			<h4 class="span12" style="text-align:center;">Update Cursillista</h4>
+		</div>
 		<form method="POST">
 			<div class="basic-individual-info">
 				<div class="row">
@@ -320,4 +322,5 @@
 	<script src="http://code.jquery.com/jquery.js"></script>
 	<script src="../assets/bootstrap/js/bootstrap.min.js"></script>
 </body>
+<?php include('../common/footer.php'); ?>
 </html>

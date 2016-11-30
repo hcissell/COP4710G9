@@ -24,7 +24,9 @@
 				$after = date('Y-m-d', time());
 				$weekends = searchWeekends($dbh, $after);
 			?>
-
+			<div class="row menu-header">
+				<h4 class="span12" style="text-align:center;">Select An Upcoming Event to Register Candidates</h4>
+			</div>
 			<table class="table table-striped">
 				<thead>
 					<tr>
@@ -71,7 +73,12 @@
 				
 				$individuals = getPotentialCandidates($dbh, $weekend['Gender'], $id);
 			?>
-			
+			<div class="row menu-header">
+				<div class="span3">
+		        	<a href="<?php makeLink('cursillo/registration.php') ?>" class="btn">Back</a>
+				</div>
+				<h4 class="span8">Select Candidates for Cursillo #: <?php echo $id ?></h4>
+			</div>
 			<table class="table table-striped">
 				<thead>
 					<tr>
@@ -110,4 +117,5 @@
 	<script src="http://code.jquery.com/jquery.js"></script>
 	<script src="../assets/bootstrap/js/bootstrap.min.js"></script>
 </body>
+<?php include('../common/footer.php'); ?>
 </html>

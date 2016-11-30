@@ -35,6 +35,9 @@
 
 	<div class="container">
 		<?php include('../common/nav.php'); ?>
+		<div class="row menu-header">
+			<h4 class="span12" style="text-align:center;">Team Member List</h4>
+		</div>
 		<form class="row">
 			<h5>Filter</h5>
 			<table class="table">
@@ -102,4 +105,5 @@
 	<script src="http://code.jquery.com/jquery.js"></script>
 	<script src="../assets/bootstrap/js/bootstrap.min.js"></script>
 </body>
+<?php include('../common/footer.php'); ?>
 </html>

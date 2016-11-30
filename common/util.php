@@ -207,7 +207,7 @@ function searchIndividuals($dbh, $searchParams, $extraParams) {
 	}
 
 	if(isset($extraParams['attendence']) || isset($extraParams['futureAttendence'])) {
-		if($andAppend) {
+		if(!$andAppend) {
 			if(isset($extraParams['attendence'])) {
 				$attendence = $extraParams['attendence'];
 				if($attendence == 'Yes') {
@@ -472,10 +472,22 @@ function createCursillo($dbh, $startDate, $endDate, $addressId, $title,
 	return $res;
 }
 
-function getWeekends($dbh) {
+function getWeekends($dbh, $searchParams) {
+	$params = array();
 	$sql = "select * from cursilloweekend";
+
+	if(!empty($searchParams)) {
+		$sql .= " where ";
+		foreach ($searchParams as $param => $value) {
+			$sql .= $param . "=? and ";
+			$params[] = $value;
+		}
+	
+		$sql = substr($sql, 0, -5);
+	}
+
 	$stm = $dbh->prepare($sql);
-	$res = $stm->execute();
+	$res = $stm->execute($params);
 
 	if($res == 1) {
 		return $stm->fetchAll();
@@ -719,6 +731,24 @@ function getPotentialTeamMembers($dbh, $gender, $eventID) {
 	return array();
 }
 
+function getPotentialSpeakers($dbh, $gender, $eventID) {
+	$sql = "select * from individual where Gender=? and IndividualType='TEAM'
+			and IndividualID not in (
+				select TeamMemberID from talkassignment where EventID=?)";
+
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($gender, $eventID));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
+}
+
 function getUnassignedRoles($dbh, $eventID) {
 	$sql = "select * from role
 			where IsActive and RoleID not in (
@@ -738,10 +768,10 @@ function getUnassignedRoles($dbh, $eventID) {
 }
 
 function getRoleAssignments($dbh, $eventID) {
-	$sql = "select * from role as r left join roleassignment as ra 
+	$sql = "select * from role as r join roleassignment as ra 
 				on r.RoleID=ra.RoleID
 				join individual as i on i.IndividualID=ra.TeamMemberID
-				where ra.EventID=? or ra.EventID IS NULL and r.IsActive";
+				where ra.EventID=? and r.IsActive";
 
 	$stm = $dbh->prepare($sql);
 	$res = $stm->execute(array($eventID));
@@ -847,6 +877,59 @@ function deleteTalk($dbh, $talk) {
 	$sql = "delete from talk where TalkID=?";
 	$stm = $dbh->prepare($sql);
 	$res = $stm->execute(array($talk["TalkID"]));
+
+	return $res;
+}
+
+function getUnassignedTalks($dbh, $eventID) {
+	$sql = "select * from talk
+			where IsActive and TalkID not in (
+				select TalkID from talkassignment where EventID=?)";
+
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($eventID));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
+}
+
+function getTalkAssignments($dbh, $eventID) {
+	$sql = "select * from talk as r join talkassignment as ra 
+				on r.TalkID=ra.TalkID
+				join individual as i on i.IndividualID=ra.TeamMemberID
+				where ra.EventID=? and r.IsActive";
+	echo $sql;
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($eventID));
+
+	if($res == 1) {
+		$res = $stm->fetchAll();
+		if(count($res) > 0) {
+			return $res;
+		}
+	}
+
+	return array();
+}
+
+function createTalkAssignment($dbh, $teamMemberID, $talkID, $eventID) {
+	$sql = "insert into talkassignment (TeamMemberID, TalkID, EventID) values (?,?,?)";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($teamMemberID, $talkID, $eventID));
+
+	return $res;
+}
+
+function deleteTalkAssignment($dbh, $teamMemberID, $talkID, $eventID) {
+	$sql = "delete from talkassignment where TeamMemberID=? and TalkID=? and EventID=?";
+	$stm = $dbh->prepare($sql);
+	$res = $stm->execute(array($teamMemberID, $talkID, $eventID));
 
 	return $res;
 }

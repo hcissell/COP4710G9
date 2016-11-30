@@ -55,6 +55,9 @@
 				}
 			?>
 		<?php endif ?>
+		<div class="row menu-header">
+			<h2 class="span12" style="text-align:center;">Create A Weekend</h2>
+		</div>
 		<form method="POST" id="cursillo-form">
 			<div class="basic-cursillo-info">
 				<div class="row">
@@ -148,4 +151,5 @@
 		});
 	</script>
 </body>
+<?php include('../common/footer.php'); ?>
 </html>
