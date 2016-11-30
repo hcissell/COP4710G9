@@ -99,9 +99,8 @@
 						<?php foreach ($talkAssignments as $talkAssignment): ?>
 							<tr>
 								<td><?php echo $talkAssignment['Title'] ?></td>
-								<td><?php echo !empty($talkAssignment['TeamMemberID']) ? 
-											  ($talkAssignment['FirstName'] ." ".
-											   $talkAssignment['LastName']) : "Nobody" ?></td>
+								<td><?php echo $talkAssignment['FirstName'] ." ".
+											   $talkAssignment['LastName'] ?></td>
 								<td>
 									<?php 
 										$link = "cursillo=" . $id . "&" . 
@@ -109,12 +108,23 @@
 												"talkid=" . $talkAssignment['TalkID'];
 									?>
 									<a href="build.php?<?php echo $link; ?>" target="new">
-										<button type="button" class="btn btn-success"
-										<?php echo empty($talkAssignment['TeamMemberID']) ? "disabled" : "" ?>>Unassign</button>
+										<button type="button" class="btn btn-success">Unassign</button>
 									</a>
 								</td>
 							</tr>
 						<?php endforeach ?>
+
+						<?php foreach ($unasignedTalks as $talk): ?>
+							<tr>
+								<td><?php echo $talk['Title'] ?></td>
+								<td>Nobody</td>
+								<td>
+									<a href="" target="new">
+										<button disabled type="button" class="btn btn-success">Unassign</button>
+									</a>
+								</td>
+							</tr>
+						<?php endforeach; ?>
 						</tbody>
 					</table>
 				</div>

@@ -100,9 +100,8 @@
 						<?php foreach ($roleAssignments as $role): ?>
 							<tr>
 								<td><?php echo $role['RoleName'] ?></td>
-								<td><?php echo !empty($role['TeamMemberID']) ? 
-											  ($role['FirstName'] ." ".
-											   $role['LastName']) : "Nobody" ?></td>
+								<td><?php echo $role['FirstName'] ." ".
+											   $role['LastName'] ?></td>
 								<td>
 									<?php 
 										$link = "cursillo=" . $id . "&" . 
@@ -111,7 +110,20 @@
 									?>
 									<a href="build.php?<?php echo $link; ?>" target="new">
 										<button type="button" class="btn btn-success"
-										<?php echo empty($role['TeamMemberID']) ? "disabled" : "" ?>>Unassign</button>
+										>Unassign</button>
+									</a>
+								</td>
+							</tr>
+						<?php endforeach ?>
+
+						<?php foreach ($unassignedRoles as $role): ?>
+							<tr>
+								<td><?php echo $role['RoleName'] ?></td>
+								<td>Nobody</td>
+								<td>
+									<a href="#" target="new">
+										<button disabled type="button" class="btn btn-success"
+										>Unassign</button>
 									</a>
 								</td>
 							</tr>

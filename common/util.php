@@ -768,10 +768,10 @@ function getUnassignedRoles($dbh, $eventID) {
 }
 
 function getRoleAssignments($dbh, $eventID) {
-	$sql = "select * from role as r left join roleassignment as ra 
+	$sql = "select * from role as r join roleassignment as ra 
 				on r.RoleID=ra.RoleID
-				left join individual as i on i.IndividualID=ra.TeamMemberID
-				where ra.EventID=? or ra.EventID IS NULL and r.IsActive";
+				join individual as i on i.IndividualID=ra.TeamMemberID
+				where ra.EventID=? and r.IsActive";
 
 	$stm = $dbh->prepare($sql);
 	$res = $stm->execute(array($eventID));
@@ -900,11 +900,11 @@ function getUnassignedTalks($dbh, $eventID) {
 }
 
 function getTalkAssignments($dbh, $eventID) {
-	$sql = "select * from talk as r left join talkassignment as ra 
+	$sql = "select * from talk as r join talkassignment as ra 
 				on r.TalkID=ra.TalkID
-				left join individual as i on i.IndividualID=ra.TeamMemberID
-				where ra.EventID=? or ra.EventID IS NULL and r.IsActive";
-
+				join individual as i on i.IndividualID=ra.TeamMemberID
+				where ra.EventID=? and r.IsActive";
+	echo $sql;
 	$stm = $dbh->prepare($sql);
 	$res = $stm->execute(array($eventID));
 
