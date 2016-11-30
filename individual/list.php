@@ -38,8 +38,10 @@
 
 	
 	<div class="container">
-	<?php include('../common/nav.php'); ?>
-
+		<?php include('../common/nav.php'); ?>
+		<div class="row menu-header">
+			<h4 class="span12" style="text-align:center;">Cursillista List</h4>
+		</div>
 		<form class="row">
 			<h5>Filter</h5>
 			<table class="table">

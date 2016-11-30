@@ -92,7 +92,9 @@
 				$sponsorLast = '';
 			}
 		?>
-
+		<div class="row menu-header">
+			<h4 class="span12" style="text-align:center;">Update Cursillista</h4>
+		</div>
 		<form method="POST">
 			<div class="basic-individual-info">
 				<div class="row">
